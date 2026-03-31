@@ -1,0 +1,46 @@
+/* Google Fonts — HARUS di paling atas */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base */
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply font-dm antialiased;
+    background: #e8f4fa;
+    color: #1e3d52;
+  }
+}
+
+/* Components */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-8 py-3 rounded-full
+           bg-dusty-700 text-dusty-50 font-cormorant text-base font-semibold
+           tracking-widest transition-all duration-300
+           hover:bg-dusty-600 hover:shadow-lg hover:-translate-y-0.5
+           active:scale-95;
+  }
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-6 py-2.5 rounded-full
+           border border-dusty-400 text-dusty-600 font-cormorant text-sm
+           tracking-wider transition-all duration-200
+           hover:bg-dusty-100 hover:border-dusty-600;
+  }
+  .card-invitation {
+    @apply bg-white/70 backdrop-blur-sm rounded-2xl
+           border border-dusty-200/60 shadow-sm;
+  }
+  .font-display {
+    @apply font-cormorant;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #e0f0f8; }
+::-webkit-scrollbar-thumb { background: #7aaec4; border-radius: 2px; }

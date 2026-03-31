@@ -1,0 +1,12 @@
+project key
+https://zalwmsnxxtcrooavhwut.supabase.co
+
+publish key : sb_publishable_-zmPrEVcB-qTlI9aTm9-qg_yfzxpvnr
+
+anon key : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbHdtc254eHRjcm9vYXZod3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NTMzNDMsImV4cCI6MjA5MDEyOTM0M30.76CbIpj8TPymrrVcRyYVoTNvNvP5ZSOq2cyLA8q3nyQ
+service key : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbHdtc254eHRjcm9vYXZod3V0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDU1MzM0MywiZXhwIjoyMDkwMTI5MzQzfQ.U1XmvxovItHb0e2Z8K2vNitZCVmZJU5Hr39kOllBFRI
+
+con string : postgresql://postgres:supabaseku1@db.zalwmsnxxtcrooavhwut.supabase.co:5432/postgres
+
+jwt secret
+bGJLD0MFIpgAEo5Yd9UYCR0nIOTt/7gTWXc0cOYiz+uYF4+x0xmE6ONq3obXjRUTuNF/xXAPpiUpx5cZMDFSCA==
