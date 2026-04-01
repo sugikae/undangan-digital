@@ -7,6 +7,21 @@
       <div class="blob blob-3" />
     </div>
 
+    <!-- Foto pasangan sebagai background blur -->
+    <div v-if="config?.bride_photo || config?.groom_photo" class="couple-bg-wrap">
+      <div
+        v-if="config?.bride_photo"
+        class="couple-bg-img bride-side"
+        :style="{ backgroundImage: `url(${config.bride_photo})` }"
+      />
+      <div
+        v-if="config?.groom_photo"
+        class="couple-bg-img groom-side"
+        :style="{ backgroundImage: `url(${config.groom_photo})` }"
+      />
+      <div class="couple-bg-fade" />
+    </div>
+
     <!-- Background SVG Branches -->
     <svg class="branches-svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" fill="none" :style="{ transform: parallaxBg }">
       <path d="M-20 800 Q50 600 100 400 Q150 200 80 0" stroke="#2c5f7a" stroke-width="1.5" opacity="0.15"/>
@@ -311,5 +326,45 @@ onUnmounted(() => {
 @keyframes scrollPulse {
   0%, 100% { opacity: 0.4; transform: scaleY(1); }
   50% { opacity: 1; transform: scaleY(1.1); }
+}
+
+.couple-bg-wrap {
+  position: absolute;
+  inset: 0; z-index: 0;
+  overflow: hidden;
+}
+
+.couple-bg-img {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 52%;
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.13;
+  filter: blur(3px) saturate(0.7);
+}
+
+.bride-side {
+  left: 0;
+  mask-image: linear-gradient(to right, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, transparent 100%);
+}
+
+.groom-side {
+  right: 0;
+  mask-image: linear-gradient(to left, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, black 0%, transparent 100%);
+}
+
+.couple-bg-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(200,221,232,0.82) 0%,
+    rgba(218,238,248,0.72) 40%,
+    rgba(232,244,250,0.78) 70%,
+    rgba(212,232,242,0.82) 100%
+  );
 }
 </style>

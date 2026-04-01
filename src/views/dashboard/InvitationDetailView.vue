@@ -86,8 +86,44 @@
                 <input v-model="editConfig.flower_color" class="form-input" style="flex:1"/>
               </div>
             </div>
+            <div class="field full">
+              <label>URL Slug</label>
+              <div class="slug-input-wrap">
+                <span class="slug-prefix">/i/</span>
+                <input v-model="editSlug" class="form-input slug-input"
+                  placeholder="nama-pasangan-2025"/>
+              </div>
+              <p class="field-hint">Huruf kecil, tanpa spasi, gunakan tanda -</p>
+            </div>
           </div>
           <button class="btn-save" @click="saveConfig">💾 Simpan Perubahan</button>
+        </div>
+
+        <!-- Upload Foto -->
+        <div class="field full">
+          <label>Foto Mempelai Wanita</label>
+          <div class="photo-upload-wrap">
+            <img v-if="editConfig.bride_photo" :src="editConfig.bride_photo" class="photo-preview"/>
+            <div v-else class="photo-placeholder">👰</div>
+            <label class="upload-label">
+              📷 Pilih Foto
+              <input type="file" accept="image/*" style="display:none"
+                @change="(e) => onPhotoChange(e, 'bride')"/>
+            </label>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Foto Mempelai Pria</label>
+          <div class="photo-upload-wrap">
+            <img v-if="editConfig.groom_photo" :src="editConfig.groom_photo" class="photo-preview"/>
+            <div v-else class="photo-placeholder">🤵</div>
+            <label class="upload-label">
+              📷 Pilih Foto
+              <input type="file" accept="image/*" style="display:none"
+                @change="(e) => onPhotoChange(e, 'groom')"/>
+            </label>
+          </div>
         </div>
 
         <!-- Tab: Lokasi & Venue -->
@@ -502,6 +538,10 @@ const isBlasting = ref(false)
 const blastResult = ref<any>(null)
 const newGuest = reactive({ name: '', phone: '', email: '', group_name: '' })
 
+//edit slug
+const editSlug = ref('')
+
+//FUNCTIONS
 function showToast(msg: string) {
   toastMsg.value = msg
   setTimeout(() => { toastMsg.value = '' }, 3000)
@@ -525,6 +565,7 @@ async function loadData() {
     }
     rsvpList.value = rsvpRes.data ?? []
     messageList.value = msgRes.data ?? []
+    editSlug.value = invRes.data?.slug ?? ''
     await loadGuests() // ← tambah ini
   } finally {
     isLoading.value = false
@@ -538,11 +579,13 @@ async function saveConfig() {
     .update({
       config: { ...editConfig },
       event_date: editEventDate.value || null,
+      slug: editSlug.value || invitation.value.slug, // ← tambah ini
     })
     .eq('id', invitation.value.id)
 
   if (error) { showToast('❌ Gagal menyimpan'); return }
   invitation.value.config = { ...editConfig }
+  invitation.value.slug = editSlug.value  // ← update lokal
   showToast('✓ Perubahan disimpan!')
 }
 
@@ -566,6 +609,7 @@ async function deleteMessage(id: string) {
     showToast('✓ Ucapan dihapus')
   }
 }
+
 
 //blast wa
 // Load guests
@@ -645,6 +689,38 @@ async function blastEmailFn() {
     showToast('❌ Email Blast gagal — pastikan SMTP sudah dikonfigurasi')
   } finally {
     isBlasting.value = false
+  }
+}
+
+//func opload foto
+async function uploadPhoto(file: File, type: 'bride' | 'groom'): Promise<string | null> {
+  if (!invitation.value) return null
+  const ext = file.name.split('.').pop()
+  const path = `${invitation.value.id}/${type}-${Date.now()}.${ext}`
+
+  const { error } = await supabase.storage
+    .from('invitation-media')
+    .upload(path, file, { upsert: true })
+
+  if (error) { showToast('❌ Gagal upload foto'); return null }
+
+  const { data } = supabase.storage
+    .from('invitation-media')
+    .getPublicUrl(path)
+
+  return data.publicUrl
+}
+
+async function onPhotoChange(e: Event, type: 'bride' | 'groom') {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  showToast('⏳ Mengupload foto...')
+  const url = await uploadPhoto(file, type)
+  if (url) {
+    if (type === 'bride') editConfig.bride_photo = url
+    else editConfig.groom_photo = url
+    await saveConfig()
+    showToast('✓ Foto berhasil diupload!')
   }
 }
 
@@ -805,5 +881,11 @@ onMounted(loadData)
 .guest-status { font-size: 11px; padding: 3px 8px; border-radius: 100px; background: rgba(91,143,168,0.1); color: rgba(44,95,122,0.6); }
 .guest-status.opened { background: rgba(5,150,105,0.1); color: #059669; }
 .guest-link { padding: 4px 8px; border-radius: 6px; background: rgba(91,143,168,0.1); color: #2d5570; text-decoration: none; font-size: 13px; }
+
+.photo-upload-wrap { display:flex; align-items:center; gap:14px; }
+.photo-preview { width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid rgba(91,143,168,0.3); }
+.photo-placeholder { width:80px; height:80px; border-radius:50%; background:rgba(91,143,168,0.1); border:2px dashed rgba(91,143,168,0.3); display:flex; align-items:center; justify-content:center; font-size:28px; }
+.upload-label { padding:8px 18px; border-radius:8px; border:1px solid rgba(91,143,168,0.3); background:white; color:#2d5570; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; }
+.upload-label:hover { background:rgba(91,143,168,0.08); }
 </style>
 

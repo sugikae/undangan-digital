@@ -44,3 +44,56 @@
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #e0f0f8; }
 ::-webkit-scrollbar-thumb { background: #7aaec4; border-radius: 2px; }
+
+/* ── MOBILE RESPONSIVE ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .form-grid { grid-template-columns: 1fr !important; }
+  .inv-grid { grid-template-columns: 1fr !important; }
+  .detail-tabs { overflow-x: auto; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; }
+  .tab-btn { white-space: nowrap; flex-shrink: 0; }
+  .stats-row { grid-template-columns: repeat(2, 1fr) !important; }
+  .blast-btns { flex-direction: column !important; }
+  .two-col { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 480px) {
+  /* Sidebar hide di mobile */
+  .sidebar { display: none !important; }
+  .dashboard-main, .detail-main {
+    margin-left: 0 !important;
+    padding: 16px !important;
+    max-width: 100vw !important;
+  }
+
+  /* Hero */
+  .name-bride, .name-groom { font-size: 38px !important; }
+  .hero-amp { font-size: 22px !important; }
+
+  /* Countdown */
+  .countdown-number { width: 60px !important; height: 60px !important; }
+  .number-text { font-size: 24px !important; }
+  .countdown-label { font-size: 10px !important; }
+
+  /* Gallery */
+  .gallery-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .gallery-item:nth-child(2) { margin-top: 0 !important; }
+  .gallery-item:nth-child(5) { margin-top: 0 !important; }
+
+  /* Person photo */
+  .person-photo-wrap { width: 150px !important; }
+  .person-photo { width: 150px !important; height: 150px !important; }
+
+  /* Venue card */
+  .venue-card { padding: 20px 16px !important; }
+  .venue-datetime { flex-direction: column; gap: 8px !important; }
+
+  /* RSVP */
+  .countdown-grid { gap: 8px !important; }
+
+  /* Music player */
+  .music-player { bottom: 16px !important; left: 16px !important; }
+
+  /* Card invitation di dashboard */
+  .inv-actions { flex-wrap: wrap; }
+  .action-btn { flex: 1; justify-content: center; text-align: center; }
+}

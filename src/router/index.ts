@@ -56,6 +56,11 @@ const router = createRouter({
       name: 'not-found',
       component: () => import('@/views/public/NotFoundView.vue'),
     },
+    {
+      path: '/catalog',
+      name: 'catalog',
+      component: () => import('@/views/public/CatalogView.vue'),
+    },
   ],
   scrollBehavior() {
     return { top: 0 }
