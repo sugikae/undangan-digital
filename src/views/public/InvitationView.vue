@@ -2,17 +2,18 @@
   <div class="invitation-page">
 
     <!-- ══ OPENING ANIMATION ══════════════════════════════════ -->
-    <!-- Pilih salah satu berdasarkan config -->
-
-    <!-- Option 1: Flower (default) -->
+    <!-- Option 1: Flower opening -->
     <FlowerPetals
       v-if="openingAnim === 'flower'"
       :guest-name="store.guestName"
+      :petal-color="store.config?.flower_color ?? '#a8c5d8'"
+      :petal-color2="lightenColor(store.config?.flower_color ?? '#a8c5d8')"
+      :butterfly-color="darkenColor(store.config?.flower_color ?? '#a8c5d8')"
       :auto-open="false"
       @opened="onOpened"
     />
 
-    <!-- Option 2: Envelope -->
+    <!-- Option 2: Envelope opening -->
     <EnvelopeOpening
       v-else-if="openingAnim === 'envelope'"
       :guest-name="store.guestName"
@@ -21,9 +22,36 @@
       @opened="onOpened"
     />
 
-    <!-- ══ BACKGROUND ANIMATIONS (selalu di atas konten) ══════ -->
-    <!-- Bintang berkelip -->
-    <StarField v-if="store.isOpened && store.config?.bg_animation_stars" />
+    <!-- ══ BACKGROUND ANIMATIONS (independent dari opening) ══ -->
+    <!-- Selalu tampil setelah opened, berdasarkan config masing2 -->
+    <template v-if="store.isOpened">
+      <!-- Bunga melayang background (bisa aktif bersamaan dengan envelope) -->
+      <FloatingPetalsLayer
+        v-if="store.config?.flower_animation && openingAnim !== 'flower'"
+        :petal-color="store.config?.flower_color ?? '#a8c5d8'"
+      />
+
+      <!-- Bintang berkelip -->
+      <StarField v-if="store.config?.bg_animation_stars" />
+
+      <!-- Glitter Effect -->
+      <GlitterEffect v-if="store.config?.bg_animation_glitter" />
+
+      <!-- Botanical Lines -->
+      <BotanicalLines v-if="store.config?.bg_animation_botanical" />
+
+      <!-- Ribbon Flow -->
+      <RibbonFlow v-if="store.config?.bg_animation_ribbon" />
+
+      <!-- Soft Glow -->
+      <SoftGlow v-if="store.config?.bg_animation_glow" />
+
+      <!-- Floating Butterflies -->
+      <FloatingButterflies v-if="store.config?.bg_animation_butterflies" />
+
+      <!-- Ring Pulse -->
+      <RingPulse v-if="store.config?.bg_animation_rings" />
+    </template>
 
     <!-- ══ MAIN CONTENT ════════════════════════════════════════ -->
     <Transition name="page-reveal">
@@ -119,6 +147,14 @@ import GiftSection from '@/components/invitation/GiftSection.vue'
 import MusicPlayer from '@/components/invitation/MusicPlayer.vue'
 import BaseToast from '@/components/ui/BaseToast.vue'
 
+import FloatingPetalsLayer from '@/components/animations/FloatingPetalsLayer.vue'
+import GlitterEffect from '@/components/animations/GlitterEffect.vue'
+import BotanicalLines from '@/components/animations/BotanicalLines.vue'
+import RibbonFlow from '@/components/animations/RibbonFlow.vue'
+import SoftGlow from '@/components/animations/SoftGlow.vue'
+import FloatingButterflies from '@/components/animations/FloatingButterflies.vue'
+import RingPulse from '@/components/animations/RingPulse.vue'
+
 defineProps<{ slug?: string; token?: string }>()
 
 const route = useRoute()
@@ -147,6 +183,30 @@ onMounted(async () => {
 function onOpened() {
   store.openInvitation()
 }
+
+function lightenColor(hex: string): string {
+  try {
+    const r = parseInt(hex.slice(1,3), 16)
+    const g = parseInt(hex.slice(3,5), 16)
+    const b = parseInt(hex.slice(5,7), 16)
+    const lr = Math.min(255, r + 40)
+    const lg = Math.min(255, g + 40)
+    const lb = Math.min(255, b + 40)
+    return `#${lr.toString(16).padStart(2,'0')}${lg.toString(16).padStart(2,'0')}${lb.toString(16).padStart(2,'0')}`
+  } catch { return '#c8dde8' }
+}
+
+function darkenColor(hex: string): string {
+  try {
+    const r = parseInt(hex.slice(1,3), 16)
+    const g = parseInt(hex.slice(3,5), 16)
+    const b = parseInt(hex.slice(5,7), 16)
+    const dr = Math.max(0, r - 40)
+    const dg = Math.max(0, g - 40)
+    const db = Math.max(0, b - 40)
+    return `#${dr.toString(16).padStart(2,'0')}${dg.toString(16).padStart(2,'0')}${db.toString(16).padStart(2,'0')}`
+  } catch { return '#5b8fa8' }
+}
 </script>
 
 <style scoped>
@@ -174,4 +234,5 @@ function onOpened() {
   0%,100% { transform: scale(1); opacity: 0.5; }
   50% { transform: scale(1.6); opacity: 1; }
 }
+
 </style>

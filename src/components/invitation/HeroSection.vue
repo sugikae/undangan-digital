@@ -1,5 +1,5 @@
 <template>
-  <section class="hero-section">
+  <section class="hero-section" :style="{ background: `linear-gradient(160deg, ${themeColor}99 0%, ${themeColor}55 35%, #eef7fc 65%, ${themeColor}44 100%)` }">
     <!-- Background -->
     <div class="hero-bg" :style="{ transform: parallaxBg }">
       <div class="blob blob-1" />
@@ -176,6 +176,17 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
+})
+
+const themeColor = computed(() => props.config?.flower_color ?? '#a8c5d8')
+const themeDark = computed(() => {
+  const hex = themeColor.value
+  try {
+    const r = Math.max(0, parseInt(hex.slice(1,3),16) - 60)
+    const g = Math.max(0, parseInt(hex.slice(3,5),16) - 60)
+    const b = Math.max(0, parseInt(hex.slice(5,7),16) - 60)
+    return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`
+  } catch { return '#1e4a63' }
 })
 </script>
 

@@ -41,6 +41,13 @@ export interface InvitationConfig {
   bg_animation_stars: boolean               // bintang berkelip
   hero_parallax: boolean                    // parallax di hero
   confetti_on_rsvp: boolean                 // confetti saat RSVP
+  // Tambahkan setelah confetti_on_rsvp
+  bg_animation_glitter?: boolean
+  bg_animation_botanical?: boolean
+  bg_animation_ribbon?: boolean
+  bg_animation_glow?: boolean
+  bg_animation_butterflies?: boolean
+  bg_animation_rings?: boolean
 }
 
 export interface Venue {

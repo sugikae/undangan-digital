@@ -95,35 +95,87 @@
               </div>
               <p class="field-hint">Huruf kecil, tanpa spasi, gunakan tanda -</p>
             </div>
+
+            <!-- Upload Foto -->
+            <div class="field full">
+              <label>Foto Mempelai Wanita</label>
+              <div class="photo-upload-wrap">
+                <img v-if="editConfig.bride_photo" :src="editConfig.bride_photo" class="photo-preview"/>
+                <div v-else class="photo-placeholder">👰</div>
+                <label class="upload-label">
+                  📷 Pilih Foto
+                  <input type="file" accept="image/*" style="display:none"
+                    @change="(e) => onPhotoChange(e, 'bride')"/>
+                </label>
+              </div>
+            </div>
+            <div class="field full">
+              <label>Foto Mempelai Pria</label>
+              <div class="photo-upload-wrap">
+                <img v-if="editConfig.groom_photo" :src="editConfig.groom_photo" class="photo-preview"/>
+                <div v-else class="photo-placeholder">🤵</div>
+                <label class="upload-label">
+                  📷 Pilih Foto
+                  <input type="file" accept="image/*" style="display:none"
+                    @change="(e) => onPhotoChange(e, 'groom')"/>
+                </label>
+              </div>
+            </div>
           </div>
           <button class="btn-save" @click="saveConfig">💾 Simpan Perubahan</button>
         </div>
 
-        <!-- Upload Foto -->
-        <div class="field full">
-          <label>Foto Mempelai Wanita</label>
-          <div class="photo-upload-wrap">
-            <img v-if="editConfig.bride_photo" :src="editConfig.bride_photo" class="photo-preview"/>
-            <div v-else class="photo-placeholder">👰</div>
-            <label class="upload-label">
-              📷 Pilih Foto
-              <input type="file" accept="image/*" style="display:none"
-                @change="(e) => onPhotoChange(e, 'bride')"/>
-            </label>
-          </div>
-        </div>
+        <!-- Tab: Galeri -->
+        <div v-if="activeTab === 'gallery'" class="tab-content">
+          <p class="tab-desc">Upload foto galeri / prewedding (max 10 foto)</p>
 
-        <div class="field full">
-          <label>Foto Mempelai Pria</label>
-          <div class="photo-upload-wrap">
-            <img v-if="editConfig.groom_photo" :src="editConfig.groom_photo" class="photo-preview"/>
-            <div v-else class="photo-placeholder">🤵</div>
-            <label class="upload-label">
-              📷 Pilih Foto
-              <input type="file" accept="image/*" style="display:none"
-                @change="(e) => onPhotoChange(e, 'groom')"/>
-            </label>
+          <!-- Upload area -->
+          <label class="gallery-upload-area" :class="{ uploading: isUploadingGallery }">
+            <div class="upload-inner">
+              <div class="upload-icon">📸</div>
+              <p class="upload-text">
+                {{ isUploadingGallery ? 'Mengupload...' : 'Klik atau drag foto ke sini' }}
+              </p>
+              <p class="upload-hint">PNG, JPG, WEBP • Bisa pilih beberapa foto sekaligus</p>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              style="display:none"
+              :disabled="isUploadingGallery"
+              @change="uploadGalleryPhoto"
+            />
+          </label>
+
+          <!-- Gallery grid -->
+          <div class="gallery-manage-grid" v-if="galleryList.length > 0">
+            <div
+              v-for="(photo, i) in galleryList"
+              :key="photo.id"
+              class="gallery-manage-item"
+            >
+              <img :src="photo.thumbnail_url || photo.url" :alt="photo.caption || ''" />
+              <div class="gallery-item-overlay">
+                <button class="gal-delete-btn" @click="deleteGalleryPhoto(photo.id, photo.url)">
+                  ✕
+                </button>
+                <span class="gal-order">{{ i + 1 }}</span>
+              </div>
+              <input
+                :value="photo.caption"
+                class="gal-caption-input"
+                placeholder="Caption (opsional)"
+                @change="(e) => updateCaption(photo.id, (e.target as HTMLInputElement).value)"
+              />
+            </div>
           </div>
+
+          <p v-else class="empty-msg">Belum ada foto galeri. Upload sekarang!</p>
+
+          <p class="tab-desc" style="margin-top:16px">
+            📌 Total: {{ galleryList.length }} foto
+          </p>
         </div>
 
         <!-- Tab: Lokasi & Venue -->
@@ -232,59 +284,89 @@
 
         <!-- Tab: Animasi -->
         <div v-if="activeTab === 'animation'" class="tab-content">
-          <p class="tab-desc">Pilih animasi yang aktif di undangan</p>
-          <div class="toggle-list">
-            <div class="toggle-item">
-              <div>
-                <p class="toggle-name">Opening Animation</p>
-                <p class="toggle-desc">Pilih animasi pembuka undangan</p>
+          <p class="tab-desc">Pilih dan kombinasikan animasi undangan kamu</p>
+
+          <!-- Opening Animation -->
+          <div class="anim-section">
+            <p class="anim-group-title">🎬 Animasi Pembuka (pilih 1)</p>
+            <div class="anim-option-grid">
+              <div
+                class="anim-option-card"
+                :class="{ selected: editConfig.opening_animation === 'flower' }"
+                @click="editConfig.opening_animation = 'flower'"
+              >
+                <div class="anim-preview-mini flower-mini">🌸</div>
+                <p class="aon">Bunga Melayang</p>
+                <p class="aod">Kelopak bunga & kupu-kupu beterbangan</p>
+                <div class="anim-check" v-if="editConfig.opening_animation === 'flower'">✓</div>
               </div>
-              <select v-model="editConfig.opening_animation" class="form-select">
-                <option value="flower">🌸 Bunga Melayang</option>
-                <option value="envelope">💌 Buka Amplop</option>
-              </select>
-            </div>
-            <div class="toggle-item">
-              <div>
-                <p class="toggle-name">🌸 Bunga & Kupu-kupu</p>
-                <p class="toggle-desc">Animasi bunga melayang di background</p>
-              </div>
-              <div class="toggle" :class="{ on: editConfig.flower_animation }"
-                @click="editConfig.flower_animation = !editConfig.flower_animation">
-                <div class="toggle-knob"/>
-              </div>
-            </div>
-            <div class="toggle-item">
-              <div>
-                <p class="toggle-name">⭐ Bintang Berkelip</p>
-                <p class="toggle-desc">Partikel bintang di background</p>
-              </div>
-              <div class="toggle" :class="{ on: editConfig.bg_animation_stars }"
-                @click="editConfig.bg_animation_stars = !editConfig.bg_animation_stars">
-                <div class="toggle-knob"/>
-              </div>
-            </div>
-            <div class="toggle-item">
-              <div>
-                <p class="toggle-name">🎊 Confetti RSVP</p>
-                <p class="toggle-desc">Confetti bunga saat tamu kirim RSVP</p>
-              </div>
-              <div class="toggle" :class="{ on: editConfig.confetti_on_rsvp }"
-                @click="editConfig.confetti_on_rsvp = !editConfig.confetti_on_rsvp">
-                <div class="toggle-knob"/>
-              </div>
-            </div>
-            <div class="toggle-item">
-              <div>
-                <p class="toggle-name">🖼️ Parallax Hero</p>
-                <p class="toggle-desc">Efek parallax saat scroll di hero section</p>
-              </div>
-              <div class="toggle" :class="{ on: editConfig.hero_parallax }"
-                @click="editConfig.hero_parallax = !editConfig.hero_parallax">
-                <div class="toggle-knob"/>
+              <div
+                class="anim-option-card"
+                :class="{ selected: editConfig.opening_animation === 'envelope' }"
+                @click="editConfig.opening_animation = 'envelope'"
+              >
+                <div class="anim-preview-mini envelope-mini">💌</div>
+                <p class="aon">Buka Amplop</p>
+                <p class="aod">Animasi amplop terbuka dengan segel lilin</p>
+                <div class="anim-check" v-if="editConfig.opening_animation === 'envelope'">✓</div>
               </div>
             </div>
           </div>
+
+          <!-- Background Animations -->
+          <div class="anim-section">
+            <p class="anim-group-title">✨ Animasi Background (bisa kombinasi)</p>
+            <div class="toggle-list">
+              <div class="toggle-item" v-for="anim in bgAnimations" :key="anim.key">
+                <div class="toggle-left">
+                  <span class="toggle-emoji">{{ anim.icon }}</span>
+                  <div>
+                    <p class="toggle-name">{{ anim.name }}</p>
+                    <p class="toggle-desc">{{ anim.desc }}</p>
+                  </div>
+                </div>
+                <div class="toggle" :class="{ on: editConfig[anim.key] }"
+                  @click="editConfig[anim.key] = !editConfig[anim.key]">
+                  <div class="toggle-knob"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Warna Bunga -->
+          <div class="anim-section">
+            <p class="anim-group-title">🎨 Warna Tema Animasi</p>
+            <div class="color-picker-wrap">
+              <div class="color-presets">
+                <div
+                  v-for="preset in colorPresets"
+                  :key="preset.color"
+                  class="color-preset"
+                  :class="{ active: editConfig.flower_color === preset.color }"
+                  :style="{ background: preset.color }"
+                  :title="preset.name"
+                  @click="editConfig.flower_color = preset.color"
+                />
+              </div>
+              <div class="color-custom">
+                <input
+                  type="color"
+                  v-model="editConfig.flower_color"
+                  class="color-input-native"
+                />
+                <input
+                  v-model="editConfig.flower_color"
+                  class="form-input color-hex-input"
+                  placeholder="#a8c5d8"
+                  maxlength="7"
+                />
+              </div>
+            </div>
+            <div class="color-preview-bar" :style="{ background: `linear-gradient(135deg, ${editConfig.flower_color}88, ${editConfig.flower_color})` }">
+              <span>Preview warna: {{ editConfig.flower_color }}</span>
+            </div>
+          </div>
+
           <button class="btn-save" @click="saveConfig">💾 Simpan Perubahan</button>
         </div>
 
@@ -512,6 +594,7 @@ const tabs = [
   { id: 'messages', icon: '💬', label: 'Ucapan' },
   { id: 'music', icon: '🎵', label: 'Musik' },
   { id: 'guests', icon: '👥', label: 'Tamu & Blast' },
+  { id: 'gallery', icon: '📸', label: 'Galeri' },
 ]
 
 const featureToggles = [
@@ -567,6 +650,7 @@ async function loadData() {
     messageList.value = msgRes.data ?? []
     editSlug.value = invRes.data?.slug ?? ''
     await loadGuests() // ← tambah ini
+    await loadGallery() // ← tambah ini
   } finally {
     isLoading.value = false
   }
@@ -723,6 +807,93 @@ async function onPhotoChange(e: Event, type: 'bride' | 'groom') {
     showToast('✓ Foto berhasil diupload!')
   }
 }
+
+//gallery photo
+const galleryList = ref<any[]>([])
+const isUploadingGallery = ref(false)
+
+async function loadGallery() {
+  if (!invitation.value) return
+  const { data } = await supabase
+    .from('galleries')
+    .select('*')
+    .eq('invitation_id', invitation.value.id)
+    .order('sort_order')
+  galleryList.value = data ?? []
+}
+
+async function uploadGalleryPhoto(e: Event) {
+  const files = (e.target as HTMLInputElement).files
+  if (!files || !invitation.value) return
+
+  isUploadingGallery.value = true
+  showToast('⏳ Mengupload foto...')
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file) return
+    const ext = file.name.split('.').pop()
+    const path = `${invitation.value.id}/gallery-${Date.now()}-${i}.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('galleries')
+      .upload(path, file, { upsert: true })
+
+    if (uploadError) continue
+
+    const { data: urlData } = supabase.storage
+      .from('galleries')
+      .getPublicUrl(path)
+
+    await supabase.from('galleries').insert({
+      invitation_id: invitation.value.id,
+      url: urlData.publicUrl,
+      thumbnail_url: urlData.publicUrl,
+      sort_order: galleryList.value.length + i,
+    })
+  }
+
+  await loadGallery()
+  isUploadingGallery.value = false
+  showToast('✓ Foto galeri berhasil diupload!')
+}
+
+async function deleteGalleryPhoto(id: string, url: string) {
+  await supabase.from('galleries').delete().eq('id', id)
+  // Hapus dari storage juga
+  const path = url.split('/galleries/')[1]
+  if (path) await supabase.storage.from('galleries').remove([path])
+  galleryList.value = galleryList.value.filter(g => g.id !== id)
+  showToast('✓ Foto dihapus')
+}
+
+async function updateCaption(id: string, caption: string) {
+  await supabase.from('galleries').update({ caption }).eq('id', id)
+}
+
+const bgAnimations = [
+  { key: 'flower_animation', icon: '🌸', name: 'Bunga & Kupu-kupu Melayang', desc: 'Kelopak bunga dan kupu-kupu cantik di background' },
+  { key: 'bg_animation_stars', icon: '⭐', name: 'Glitter / Bintang Berkelip', desc: 'Bintang kecil berkelip elegan' },
+  { key: 'bg_animation_glitter', icon: '✨', name: 'Sparkle Effect', desc: 'Efek kilau berlian berpendar' },
+  { key: 'bg_animation_botanical', icon: '🌿', name: 'Botanical Line Drawing', desc: 'Animasi gambar daun dan ranting tumbuh' },
+  { key: 'bg_animation_ribbon', icon: '🎀', name: 'Ribbon / Silk Flow', desc: 'Pita sutra mengalir lembut di background' },
+  { key: 'bg_animation_glow', icon: '🌙', name: 'Soft Light Glow', desc: 'Cahaya aura lembut romantis' },
+  { key: 'bg_animation_butterflies', icon: '🦋', name: 'Floating Creatures', desc: 'Kupu-kupu dan burung terbang bebas' },
+  { key: 'bg_animation_rings', icon: '💍', name: 'Ring / Circle Pulse', desc: 'Lingkaran berdenyut seperti cincin pernikahan' },
+]
+
+const colorPresets = [
+  { name: 'Dusty Blue', color: '#a8c5d8' },
+  { name: 'Rose Gold', color: '#d4a574' },
+  { name: 'Sage Green', color: '#8fad9e' },
+  { name: 'Blush Pink', color: '#e8b4b8' },
+  { name: 'Lavender', color: '#b8a8d8' },
+  { name: 'Champagne', color: '#d4c4a8' },
+  { name: 'Mint', color: '#a8d4c8' },
+  { name: 'Mauve', color: '#c8a8b8' },
+  { name: 'Navy', color: '#8898b8' },
+  { name: 'Terracotta', color: '#c8948a' },
+]
 
 onMounted(loadData)
 </script>
@@ -887,5 +1058,113 @@ onMounted(loadData)
 .photo-placeholder { width:80px; height:80px; border-radius:50%; background:rgba(91,143,168,0.1); border:2px dashed rgba(91,143,168,0.3); display:flex; align-items:center; justify-content:center; font-size:28px; }
 .upload-label { padding:8px 18px; border-radius:8px; border:1px solid rgba(91,143,168,0.3); background:white; color:#2d5570; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; }
 .upload-label:hover { background:rgba(91,143,168,0.08); }
+
+
+/* Gallery upload */
+.gallery-upload-area {
+  display: block; width: 100%;
+  border: 2px dashed rgba(91,143,168,0.35);
+  border-radius: 16px; padding: 32px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s; margin-bottom: 20px;
+  background: rgba(91,143,168,0.03);
+}
+.gallery-upload-area:hover, .gallery-upload-area.uploading {
+  border-color: #5b8fa8;
+  background: rgba(91,143,168,0.06);
+}
+.upload-icon { font-size: 36px; margin-bottom: 10px; }
+.upload-text { font-size: 14px; font-weight: 500; color: #2d5570; margin-bottom: 4px; }
+.upload-hint { font-size: 12px; color: rgba(44,95,122,0.5); }
+
+.gallery-manage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+.gallery-manage-item {
+  position: relative; border-radius: 10px; overflow: hidden;
+  border: 1px solid rgba(91,143,168,0.15);
+}
+.gallery-manage-item img {
+  width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;
+}
+.gallery-item-overlay {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between;
+  align-items: flex-start; padding: 6px;
+}
+.gal-delete-btn {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(239,68,68,0.85); color: white;
+  border: none; font-size: 11px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.gal-order {
+  background: rgba(0,0,0,0.5); color: white;
+  font-size: 11px; padding: 2px 6px; border-radius: 4px;
+}
+.gal-caption-input {
+  width: 100%; padding: 6px 8px; border: none;
+  border-top: 1px solid rgba(91,143,168,0.15);
+  font-size: 11px; color: #2d5570; background: white;
+  outline: none;
+}
+
+/* Animation tab */
+.anim-section { margin-bottom: 28px; }
+.anim-group-title {
+  font-size: 13px; font-weight: 600; color: #1e4a63;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid rgba(91,143,168,0.12);
+}
+
+.anim-option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.anim-option-card {
+  border: 2px solid rgba(91,143,168,0.15); border-radius: 14px;
+  padding: 16px; cursor: pointer; transition: all 0.2s;
+  position: relative; text-align: center;
+  background: rgba(255,255,255,0.5);
+}
+.anim-option-card:hover { border-color: rgba(91,143,168,0.4); background: rgba(255,255,255,0.8); }
+.anim-option-card.selected { border-color: #5b8fa8; background: rgba(91,143,168,0.08); }
+.anim-preview-mini { font-size: 32px; margin-bottom: 8px; animation: float 3s ease-in-out infinite; }
+.aon { font-size: 13px; font-weight: 600; color: #1e4a63; margin-bottom: 3px; }
+.aod { font-size: 11px; color: rgba(44,95,122,0.6); line-height: 1.3; }
+.anim-check {
+  position: absolute; top: 8px; right: 8px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #5b8fa8; color: white;
+  font-size: 12px; display: flex; align-items: center; justify-content: center;
+}
+
+.toggle-left { display: flex; align-items: center; gap: 12px; }
+.toggle-emoji { font-size: 22px; flex-shrink: 0; }
+
+/* Color picker */
+.color-picker-wrap { display: flex; flex-direction: column; gap: 12px; }
+.color-presets { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-preset {
+  width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; border: 2px solid transparent;
+  transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.color-preset:hover { transform: scale(1.15); }
+.color-preset.active { border-color: white; box-shadow: 0 0 0 3px rgba(91,143,168,0.5); transform: scale(1.1); }
+.color-custom { display: flex; align-items: center; gap: 10px; }
+.color-input-native {
+  width: 48px; height: 40px; border-radius: 8px;
+  border: 1px solid rgba(91,143,168,0.25); cursor: pointer; padding: 2px;
+}
+.color-hex-input { flex: 1; max-width: 120px; }
+.color-preview-bar {
+  padding: 10px 16px; border-radius: 8px; margin-top: 4px;
+}
+.color-preview-bar span { font-size: 12px; color: white; font-family: 'DM Mono', monospace; }
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
 </style>
 

@@ -2,6 +2,7 @@ import type { Invitation, Message, Gallery } from '@/types'
 import { mockInvitation, mockMessages, mockGalleries } from './mock.data'
 import { supabase } from './supabase'
 import axios from 'axios'
+import { catalogInvitations } from '@/data/catalog.data'
 
 const API_URL = import.meta.env.VITE_API_URL
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
@@ -11,6 +12,12 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL)
 
 // ── GET INVITATION BY SLUG ───────────────────────────────────
 export async function getInvitationBySlug(slug: string): Promise<Invitation | null> {
+  // Cek apakah ini demo/catalog slug
+  if (slug.startsWith('demo-')) {
+    await delay(300)
+    return catalogInvitations[slug] ?? null
+  }
+
   if (USE_MOCK) {
     await delay(400)
     return mockInvitation
