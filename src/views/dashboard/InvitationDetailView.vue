@@ -333,6 +333,27 @@
             </div>
           </div>
 
+          <!-- Scroll Effect -->
+          <div class="anim-section">
+            <p class="anim-group-title">🎭 Efek Animasi Scroll</p>
+            <p class="tab-desc" style="margin-bottom:14px">Pilih efek saat konten muncul ketika tamu scroll undangan</p>
+            <div class="scroll-effect-grid">
+              <div
+                v-for="eff in scrollEffects"
+                :key="eff.value"
+                class="scroll-effect-card"
+                :class="{ selected: editConfig.scroll_effect === eff.value }"
+                @click="editConfig.scroll_effect = eff.value"
+              >
+                <div class="sef-demo" :class="`demo-${eff.value}`">
+                  <div class="sef-box" />
+                </div>
+                <p class="sef-name">{{ eff.name }}</p>
+                <p class="sef-desc">{{ eff.desc }}</p>
+                <div class="anim-check" v-if="editConfig.scroll_effect === eff.value">✓</div>
+              </div>
+            </div>
+          </div>
           <!-- Warna Bunga -->
           <div class="anim-section">
             <p class="anim-group-title">🎨 Warna Tema Animasi</p>
@@ -569,7 +590,33 @@ dayjs.locale('id')
 import { blastWhatsApp, blastEmail } from '@/services/invitation.service'
 
 
-
+const scrollEffects = [
+  {
+    value: 'fade-up',
+    name: '⬆️ Fade Up',
+    desc: 'Muncul dari bawah dengan fade. Halus & elegan.',
+  },
+  {
+    value: 'zoom-in',
+    name: '🔍 Zoom In',
+    desc: 'Membesar dari kecil. Dramatis & modern.',
+  },
+  {
+    value: 'bounce',
+    name: '🎾 Bounce',
+    desc: 'Muncul dengan pantulan. Playful & ceria.',
+  },
+  {
+    value: 'slide-left',
+    name: '⬅️ Slide Left',
+    desc: 'Geser dari kiri. Dinamis & tegas.',
+  },
+  {
+    value: 'flip-up',
+    name: '🔄 Flip Up',
+    desc: 'Berputar muncul ke atas. Unik & memukau.',
+  },
+]
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -1165,6 +1212,73 @@ onMounted(loadData)
 @keyframes float {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
+}
+
+.scroll-effect-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.scroll-effect-card {
+  border: 2px solid rgba(91,143,168,0.15);
+  border-radius: 12px; padding: 14px 12px;
+  cursor: pointer; transition: all 0.2s;
+  text-align: center; position: relative;
+  background: rgba(255,255,255,0.5);
+}
+.scroll-effect-card:hover { border-color: rgba(91,143,168,0.4); }
+.scroll-effect-card.selected { border-color: #5b8fa8; background: rgba(91,143,168,0.08); }
+
+.sef-demo {
+  height: 48px; margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.sef-box {
+  width: 32px; height: 24px;
+  background: linear-gradient(135deg, rgba(91,143,168,0.4), rgba(91,143,168,0.2));
+  border-radius: 4px;
+}
+
+/* Demo animations */
+.scroll-effect-card:hover .demo-fade-up .sef-box {
+  animation: demoFadeUp 0.6s ease forwards;
+}
+.scroll-effect-card:hover .demo-zoom-in .sef-box {
+  animation: demoZoom 0.6s ease forwards;
+}
+.scroll-effect-card:hover .demo-bounce .sef-box {
+  animation: demoBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.scroll-effect-card:hover .demo-slide-left .sef-box {
+  animation: demoSlide 0.5s ease forwards;
+}
+.scroll-effect-card:hover .demo-flip-up .sef-box {
+  animation: demoFlip 0.7s ease forwards;
+}
+
+.sef-name { font-size: 12px; font-weight: 600; color: #1e4a63; margin-bottom: 3px; }
+.sef-desc { font-size: 10px; color: rgba(44,95,122,0.6); line-height: 1.3; }
+
+@keyframes demoFadeUp {
+  from { opacity:0.3; transform: translateY(12px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+@keyframes demoZoom {
+  from { opacity:0.3; transform: scale(0.7); }
+  to   { opacity:1; transform: scale(1); }
+}
+@keyframes demoBounce {
+  from { opacity:0.3; transform: translateY(16px) scale(0.85); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+@keyframes demoSlide {
+  from { opacity:0.3; transform: translateX(-20px); }
+  to   { opacity:1; transform: translateX(0); }
+}
+@keyframes demoFlip {
+  from { opacity:0.3; transform: perspective(200px) rotateX(30deg); }
+  to   { opacity:1; transform: perspective(200px) rotateX(0deg); }
 }
 </style>
 

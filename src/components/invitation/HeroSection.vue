@@ -132,11 +132,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted,watch } from 'vue'
 import type { InvitationConfig, Venue } from '@/types'
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
 dayjs.locale('id')
+
+import { useThemeColor } from '@/composables/useThemeColor'
+
+
 
 const props = defineProps<{
   brideName: string
@@ -145,6 +149,9 @@ const props = defineProps<{
   config: InvitationConfig | null
   enableParallax?: boolean   // ← tambah ini
 }>()
+
+// Di dalam script setup:
+const { applyTheme } = useThemeColor(props.config?.flower_color ?? '#a8c5d8')
 
 const visible = ref(false)
 const contentRef = ref<HTMLElement>()
@@ -172,6 +179,13 @@ function onScroll() { scrollY.value = window.scrollY }
 onMounted(() => {
   setTimeout(() => { visible.value = true }, 200)
   window.addEventListener('scroll', onScroll, { passive: true })
+  // Apply theme color saat komponen mount
+  applyTheme(props.config?.flower_color ?? '#a8c5d8')
+})
+
+// Watch perubahan warna
+watch(() => props.config?.flower_color, (newColor) => {
+  if (newColor) applyTheme(newColor)
 })
 
 onUnmounted(() => {
@@ -250,7 +264,7 @@ const themeDark = computed(() => {
   font-size: 11px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(44,95,122,0.7);
+  color: var(--theme-text-muted);
   margin-bottom: 12px;
 }
 
@@ -266,17 +280,17 @@ const themeDark = computed(() => {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(40px, 11vw, 68px);
   font-style: italic;
-  font-weight: 300;
-  color: #1e4a63;
+  font-weight: 400; /* Lebih tebal dari 300 */
+  color: var(--theme-darker);
   line-height: 1;
-  text-shadow: 0 4px 28px rgba(184,212,228,0.7);
+  text-shadow: 0 2px 16px rgba(var(--theme-rgb), 0.3);
 }
 
 .hero-amp {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(22px, 5vw, 32px);
-  color: #5b8fa8;
-  font-weight: 400;
+  color: var(--theme-dark);
+  font-weight: 500;
   line-height: 1.4;
 }
 
@@ -291,20 +305,20 @@ const themeDark = computed(() => {
 
 .hero-date {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   letter-spacing: 1.5px;
-  color: #2d5570;
+  color: var(--theme-darker);
   margin-bottom: 6px;
   text-transform: capitalize;
 }
 
 .hero-location {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 13px;
-  color: rgba(44,95,122,0.6);
+  font-size: 14px;
+  color: var(--theme-text-muted);
   letter-spacing: 1px;
-  margin-bottom: 0;
+  font-weight: 500;
 }
 
 .flower-bottom {
@@ -331,7 +345,8 @@ const themeDark = computed(() => {
   font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(44,95,122,0.45);
+  color: var(--theme-dark);
+  opacity: 0.6;
 }
 
 @keyframes scrollPulse {
@@ -377,5 +392,15 @@ const themeDark = computed(() => {
     rgba(232,244,250,0.78) 70%,
     rgba(212,232,242,0.82) 100%
   );
+}
+
+.hero-section {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--theme-gradient);
 }
 </style>

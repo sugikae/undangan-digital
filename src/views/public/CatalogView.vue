@@ -41,16 +41,22 @@
           <div class="model-preview-wrap">
             <div class="model-phone-frame">
               <div class="phone-notch" />
-              <div class="phone-screen" :style="{ background: `linear-gradient(160deg, ${model.color}99, ${model.color}44 50%, #e8f4fa)` }">
+              <div class="phone-screen" :style="{
+                  background: `linear-gradient(160deg,
+                    ${lighten(model.color, 30)}dd 0%,
+                    ${model.color}88 35%,
+                    ${lighten(model.color, 50)}ee 65%,
+                    ${lighten(model.color, 20)}bb 100%)`
+                }">
                 <!-- Mini preview content -->
                 <div class="mini-hero">
                   <div class="mini-petal-1" :style="{ background: model.color }" />
                   <div class="mini-petal-2" :style="{ background: model.color }" />
                   <div class="mini-petal-3" :style="{ background: model.color }" />
                   <p class="mini-label">The Wedding of</p>
-                  <p class="mini-bride">{{ model.brideName }}</p>
-                  <p class="mini-amp">&</p>
-                  <p class="mini-groom">{{ model.groomName }}</p>
+                  <p class="mini-bride" :style="{ color: darkenColor(model.color) }">{{ model.brideName }}</p>
+                  <p class="mini-amp" :style="{ color: model.color }">{{ '&' }}</p>
+                  <p class="mini-groom" :style="{ color: darkenColor(model.color) }">{{ model.groomName }}</p>
                   <div class="mini-divider" :style="{ background: model.color }"/>
                   <p class="mini-date">{{ model.dateStr }}</p>
                 </div>
@@ -383,6 +389,15 @@ function initBg() {
     animFrame = requestAnimationFrame(loop)
   }
   loop()
+}
+
+function lighten(hex: string, amt: number): string {
+  try {
+    const r = Math.min(255, parseInt(hex.slice(1,3),16) + amt)
+    const g = Math.min(255, parseInt(hex.slice(3,5),16) + amt)
+    const b = Math.min(255, parseInt(hex.slice(5,7),16) + amt)
+    return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`
+  } catch { return hex }
 }
 
 onMounted(() => { setTimeout(initBg, 100) })

@@ -7,62 +7,74 @@
       <div class="connector-line" />
     </div>
 
-    <p class="section-label" :class="{ show: visible }">Kisah Cinta</p>
+    <ScrollReveal :effect="scrollEffect" :delay="0">
+      <p class="section-label" :class="{ show: visible }">Kisah Cinta</p>
+    </ScrollReveal>
 
-    <div class="section-subtitle" :class="{ show: visible }">
-      <p>Perjalanan indah yang mengantarkan kami ke hari ini</p>
-    </div>
+    <ScrollReveal :effect="scrollEffect" :delay="100">
+      <div class="section-subtitle" :class="{ show: visible }">
+        <p>Perjalanan indah yang mengantarkan kami ke hari ini</p>
+      </div>
+    </ScrollReveal>
 
-    <!-- Timeline -->
-    <div class="timeline" :class="{ show: visible }">
 
-      <!-- Timeline center line -->
-      <div class="timeline-line" />
+      <!-- Timeline -->
+      <div class="timeline" :class="{ show: visible }">
 
-      <div
-        v-for="(story, i) in stories"
-        :key="i"
-        class="timeline-item"
-        :class="{ 'item-right': i % 2 !== 0, show: visible }"
-        :style="{ transitionDelay: `${0.1 + i * 0.18}s` }"
-      >
-        <!-- Dot on center line -->
-        <div class="timeline-dot">
-          <div class="dot-inner" />
-        </div>
+        <!-- Timeline center line -->
+        <div class="timeline-line" />
 
-        <!-- Card -->
-        <div class="story-card">
-          <!-- Photo jika ada -->
-          <div v-if="story.photo" class="story-photo-wrap">
-            <img :src="story.photo" :alt="story.title" class="story-photo" />
+        <ScrollReveal v-for="(story, i) in stories"
+            :key="i"
+            :effect="scrollEffect"
+            :delay="i * 120"
+          >
+        <div class="timeline-item"
+          :class="{ 'item-right': i % 2 !== 0, show: visible }"
+        >
+          <!-- Dot on center line -->
+          <div class="timeline-dot">
+            <div class="dot-inner" />
           </div>
 
-          <!-- Icon jika tidak ada foto -->
-          <div v-else class="story-icon">
-            {{ storyIcons[i % storyIcons.length] }}
+          <!-- Card -->
+          <div class="story-card">
+            <!-- Photo jika ada -->
+            <div v-if="story.photo" class="story-photo-wrap">
+              <img :src="story.photo" :alt="story.title" class="story-photo" />
+            </div>
+
+            <!-- Icon jika tidak ada foto -->
+            <div v-else class="story-icon">
+              {{ storyIcons[i % storyIcons.length] }}
+            </div>
+
+            <div class="story-year">{{ story.year }}</div>
+            <h3 class="story-title">{{ story.title }}</h3>
+            <p class="story-desc">{{ story.description }}</p>
           </div>
 
-          <div class="story-year">{{ story.year }}</div>
-          <h3 class="story-title">{{ story.title }}</h3>
-          <p class="story-desc">{{ story.description }}</p>
-        </div>
+          <!-- Connector line to dot -->
+          <div class="item-connector" />
 
-        <!-- Connector line to dot -->
-        <div class="item-connector" />
+        </div>
+        </ScrollReveal>
       </div>
 
-    </div>
 
-    <!-- Closing quote -->
-    <div class="closing-quote" :class="{ show: visible }">
-      <svg width="32" height="24" viewBox="0 0 32 24" fill="none" class="quote-mark">
-        <path d="M0 24V14.4C0 6.4 4.8 1.6 14.4 0l1.6 2.4C10.4 3.6 7.6 6.4 7.2 10.4H13.6V24H0ZM18.4 24V14.4C18.4 6.4 23.2 1.6 32 0l1.6 2.4C28 3.6 25.2 6.4 24.8 10.4H31.2V24H18.4Z"
-          fill="#92bdd4" opacity="0.4"/>
-      </svg>
-      <p>Dan kini, kami siap memulai babak baru yang paling indah bersama.</p>
-      <p class="quote-names">{{ brideName }} & {{ groomName }}</p>
-    </div>
+
+    <ScrollReveal :effect="scrollEffect" :delay="300">
+      <!-- Closing quote -->
+      <div class="closing-quote" :class="{ show: visible }">
+        <svg width="32" height="24" viewBox="0 0 32 24" fill="none" class="quote-mark">
+          <path d="M0 24V14.4C0 6.4 4.8 1.6 14.4 0l1.6 2.4C10.4 3.6 7.6 6.4 7.2 10.4H13.6V24H0ZM18.4 24V14.4C18.4 6.4 23.2 1.6 32 0l1.6 2.4C28 3.6 25.2 6.4 24.8 10.4H31.2V24H18.4Z"
+            fill="#92bdd4" opacity="0.4"/>
+        </svg>
+        <p>Dan kini, kami siap memulai babak baru yang paling indah bersama.</p>
+        <p class="quote-names">{{ brideName }} & {{ groomName }}</p>
+      </div>
+    </ScrollReveal>
+
 
   </section>
 </template>
@@ -70,6 +82,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import type { LoveStory as LoveStoryType, InvitationConfig } from '@/types'
+import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 
 const props = defineProps<{
   brideName: string
@@ -83,6 +96,12 @@ const visible = ref(false)
 const storyIcons = ['💌', '🌙', '☕', '🌹', '💍', '✨', '🎉', '🕊️']
 
 const stories = computed<LoveStoryType[]>(() => props.config?.love_story ?? [])
+
+
+// Efek scroll dari config
+const scrollEffect = computed(() =>
+  (props.config as any)?.scroll_effect ?? 'fade-up'
+)
 
 let observer: IntersectionObserver
 onMounted(() => {

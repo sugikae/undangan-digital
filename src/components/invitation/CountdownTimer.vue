@@ -54,7 +54,7 @@ const formattedDate = computed(() =>
 <style scoped>
 .countdown-section {
   padding: 64px 24px;
-  background: linear-gradient(180deg, #1e4a63 0%, #2d6e8f 100%);
+  background: var(--theme-countdown-bg);
   position: relative;
   overflow: hidden;
 }
@@ -100,7 +100,7 @@ const formattedDate = computed(() =>
   font-size: 11px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.6);
   margin-bottom: 32px;
 }
 
@@ -121,9 +121,9 @@ const formattedDate = computed(() =>
 .countdown-number {
   width: 72px; height: 72px;
   border-radius: 16px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.15);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,7 +145,7 @@ const formattedDate = computed(() =>
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.55);
 }
 
 .already-text {
@@ -167,13 +167,13 @@ const formattedDate = computed(() =>
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255,255,255,0.75);
   text-transform: capitalize;
   white-space: nowrap;
 }
 .event-date-display .line {
   height: 1px; flex: 1;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.2);
   max-width: 60px;
 }
 </style>

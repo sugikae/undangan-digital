@@ -12,17 +12,24 @@
       <div class="connector-line" />
     </div>
 
-    <!-- Section label -->
-    <p class="section-label" :class="{ show: visible }">Mempelai</p>
+    <ScrollReveal :effect="scrollEffect" :delay="0">
+      <!-- Section label -->
+      <p class="section-label" :class="{ show: visible }">Mempelai</p>
+    </ScrollReveal>
 
-    <!-- Bismillah / ayat -->
-    <div class="ayat-box" :class="{ show: visible }">
-      <p class="ayat-arabic">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا</p>
-      <p class="ayat-latin">Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri</p>
-      <p class="ayat-source">— QS. Ar-Rum: 21</p>
-    </div>
 
-    <!-- Bride -->
+    <ScrollReveal :effect="scrollEffect" :delay="100">
+      <!-- Bismillah / ayat -->
+      <div class="ayat-box" :class="{ show: visible }">
+        <p class="ayat-arabic">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا</p>
+        <p class="ayat-latin">Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri</p>
+        <p class="ayat-source">— QS. Ar-Rum: 21</p>
+      </div>
+    </ScrollReveal>
+
+
+    <ScrollReveal :effect="scrollEffect" :delay="200">
+      <!-- Bride -->
     <div class="person-card" :class="{ show: visible }" style="transition-delay: 0.2s">
       <div class="person-photo-wrap">
         <div class="photo-ring" />
@@ -44,7 +51,9 @@
         </p>
       </div>
     </div>
+    </ScrollReveal>
 
+    <ScrollReveal :effect="scrollEffect" :delay="300">
     <!-- Divider -->
     <div class="couple-divider" :class="{ show: visible }">
       <span class="div-line" />
@@ -56,8 +65,10 @@
       </div>
       <span class="div-line" />
     </div>
+    </ScrollReveal>
 
     <!-- Groom -->
+    <ScrollReveal :effect="scrollEffect" :delay="400">
     <div class="person-card" :class="{ show: visible }" style="transition-delay: 0.4s">
       <div class="person-photo-wrap">
         <div class="photo-ring" />
@@ -79,13 +90,15 @@
         </p>
       </div>
     </div>
+    </ScrollReveal>
 
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted,computed } from 'vue'
 import type { InvitationConfig } from '@/types'
+import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 
 const props = defineProps<{
   brideName: string
@@ -94,8 +107,14 @@ const props = defineProps<{
 }>()
 
 const defaultPhoto = 'https://i.pravatar.cc/300?img=47'
+const defaultPhoto2 = 'https://i.pravatar.cc/300?img=68'
 const sectionRef = ref<HTMLElement>()
 const visible = ref(false)
+
+// Efek scroll dari config
+const scrollEffect = computed(() =>
+  (props.config as any)?.scroll_effect ?? 'fade-up'
+)
 
 function onImgError(e: Event) {
   const img = e.target as HTMLImageElement
@@ -116,7 +135,7 @@ onUnmounted(() => observer?.disconnect())
 <style scoped>
 .bridegroom-section {
   padding: 20px 24px 64px;
-  background: linear-gradient(180deg, #e4f2f8 0%, #eef7fc 50%, #e8f4fa 100%);
+  background: var(--theme-section-alt);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -152,7 +171,7 @@ onUnmounted(() => observer?.disconnect())
   margin-bottom: 40px;
   padding: 24px 28px;
   background: rgba(255,255,255,0.5);
-  border: 1px solid rgba(91,143,168,0.15);
+  border: 1px solid var(--theme-border);
   border-radius: 16px;
   backdrop-filter: blur(8px);
   opacity: 0; transform: translateY(16px);
@@ -162,7 +181,7 @@ onUnmounted(() => observer?.disconnect())
 
 .ayat-arabic {
   font-size: 22px;
-  color: #1e4a63;
+  color: var(--theme-darker);
   line-height: 1.8;
   margin-bottom: 12px;
   font-family: 'Traditional Arabic', 'Arial Unicode MS', serif;
@@ -171,7 +190,8 @@ onUnmounted(() => observer?.disconnect())
   font-family: 'Cormorant Garamond', serif;
   font-size: 13px;
   font-style: italic;
-  color: rgba(44,95,122,0.75);
+  color: var(--theme-text-muted);
+  font-weight: 500;
   line-height: 1.6;
   margin-bottom: 8px;
 }
@@ -214,7 +234,7 @@ onUnmounted(() => observer?.disconnect())
   width: 180px; height: 180px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid rgba(255,255,255,0.8);
+  border: 3px solid var(--theme-primary);
   box-shadow: 0 8px 32px rgba(91,143,168,0.25);
   position: relative; z-index: 1;
 }
@@ -234,25 +254,25 @@ onUnmounted(() => observer?.disconnect())
   font-size: 10px;
   letter-spacing: 3.5px;
   text-transform: uppercase;
-  color: rgba(44,95,122,0.5);
+  color: var(--theme-text-muted);
   margin-bottom: 6px;
 }
 .person-name {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(28px, 7vw, 40px);
   font-style: italic;
-  font-weight: 300;
-  color: #1e4a63;
+  font-weight: 400;
+  color: var(--theme-darker);
   line-height: 1.1;
   margin-bottom: 10px;
 }
 .person-parents {
   font-family: 'Cormorant Garamond', serif;
   font-size: 13px;
-  color: rgba(44,95,122,0.6);
+  color: var(--theme-text-muted);
   line-height: 1.7;
 }
-.person-parents span { font-weight: 600; color: rgba(44,95,122,0.8); }
+.person-parents span { font-weight: 700; color: var(--theme-dark); }
 
 /* Couple divider */
 .couple-divider {

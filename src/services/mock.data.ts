@@ -75,6 +75,13 @@ export const mockInvitation: Invitation = {
     bg_animation_stars: true,
     hero_parallax: true,
     confetti_on_rsvp: true,
+    scroll_effect: 'fade-up',
+    bg_animation_glitter: false,
+    bg_animation_botanical: false,
+    bg_animation_ribbon: false,
+    bg_animation_glow: false,
+    bg_animation_butterflies: false,
+    bg_animation_rings: false,
   },
 }
 

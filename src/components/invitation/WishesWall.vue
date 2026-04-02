@@ -173,14 +173,14 @@ onUnmounted(() => observer?.disconnect())
   font-size: 15px; color: #1e4a63;
   outline: none; transition: border-color 0.2s; resize: none;
 }
-.form-input:focus { border-color: #5b8fa8; background: rgba(255,255,255,0.9); }
+.form-input:focus { border-color: #5b8fa8; border-color: var(--theme-primary); }
 .form-input::placeholder { color: rgba(44,95,122,0.35); }
 .form-textarea { min-height: 80px; }
 
 .send-btn {
   padding: 12px;
   border-radius: 100px; border: none;
-  background: linear-gradient(135deg, #1e4a63, #2d6e8f);
+  background: linear-gradient(135deg, var(--theme-darker), var(--theme-dark));
   color: #e8f4fa;
   font-family: 'Cormorant Garamond', serif;
   font-size: 14px; font-weight: 600; letter-spacing: 2px;

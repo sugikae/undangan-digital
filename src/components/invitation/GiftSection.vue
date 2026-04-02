@@ -170,19 +170,19 @@ onUnmounted(() => observer?.disconnect())
 .account-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .bank-logo {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 18px; font-weight: 700; color: #1e4a63; letter-spacing: 1px;
+  font-size: 18px; font-weight: 700; color: var(--theme-darker); letter-spacing: 1px;
 }
 .copy-btn {
   padding: 5px 14px; border-radius: 100px;
-  border: 1px solid rgba(91,143,168,0.3);
-  background: transparent; color: #5b8fa8;
+  border: 1px solid var(--theme-border);
+  background: transparent; color: var(--theme-dark);
   font-family: 'DM Sans', sans-serif; font-size: 12px;
   cursor: pointer; transition: all 0.2s;
 }
 .copy-btn:hover { background: rgba(91,143,168,0.08); }
 .account-number {
   font-family: 'DM Mono', monospace; font-size: 20px;
-  color: #1e4a63; letter-spacing: 2px; margin-bottom: 4px;
+  color: var(--theme-darker); letter-spacing: 2px; margin-bottom: 4px;
 }
 .account-name {
   font-family: 'Cormorant Garamond', serif;
@@ -211,9 +211,10 @@ onUnmounted(() => observer?.disconnect())
 .form-input:focus { border-color: #5b8fa8; }
 .form-input::placeholder { color: rgba(44,95,122,0.35); }
 .confirm-btn {
-  padding: 12px; border-radius: 100px; border: none;
+  padding: 12px; border-radius: 100px;
+  border-color: var(--theme-border);
   background: linear-gradient(135deg, #1e4a63, #2d6e8f);
-  color: #e8f4fa;
+  color: var(--theme-dark);
   font-family: 'Cormorant Garamond', serif;
   font-size: 14px; font-weight: 600; letter-spacing: 2px;
   cursor: pointer; transition: all 0.3s;
@@ -245,6 +246,6 @@ onUnmounted(() => observer?.disconnect())
 .closing-names {
   font-family: 'Cormorant Garamond', serif;
   font-size: 24px; font-style: italic;
-  color: #1e4a63;
+  color: var(--theme-darker);
 }
 </style>

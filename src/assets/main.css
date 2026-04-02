@@ -1,6 +1,27 @@
 /* Google Fonts — HARUS di paling atas */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
+/* ── Theme CSS Variables (default: dusty blue) ── */
+:root {
+  --theme-primary: #a8c5d8;
+  --theme-light: #c8dde8;
+  --theme-lighter: #e8f4fa;
+  --theme-dark: #5b8fa8;
+  --theme-darker: #1e4a63;
+  --theme-rgb: 168,197,216;
+  --theme-bg-start: #d8eef8;
+  --theme-bg-end: #e8f4fa;
+  --theme-text: #1e4a63;
+  --theme-text-muted: rgba(44,95,122,0.65);
+  --theme-border: rgba(168,197,216,0.4);
+  --theme-shadow: rgba(168,197,216,0.2);
+  --theme-btn-bg: #2d5570;
+  --theme-btn-text: #ffffff;
+  --theme-gradient: linear-gradient(160deg, #c8dde8cc 0%, #c8dde899 35%, #e8f4faee 65%, #d4e8f2bb 100%);
+  --theme-section-alt: linear-gradient(180deg, #e8f4faee 0%, #eef7fcff 100%);
+  --theme-countdown-bg: linear-gradient(180deg, #5b8fa8 0%, #3d7090 100%);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -96,4 +117,44 @@
   /* Card invitation di dashboard */
   .inv-actions { flex-wrap: wrap; }
   .action-btn { flex: 1; justify-content: center; text-align: center; }
+}
+
+/* ── Fix Font Kontras Global ── */
+.font-cormorant,
+.font-display,
+[class*="section-label"],
+[class*="person-name"],
+[class*="venue-type"],
+[class*="wish-name"],
+[class*="story-title"],
+[class*="inv-names"] {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Perkuat semua teks Cormorant di undangan */
+.section-label {
+  font-weight: 600 !important;
+  letter-spacing: 3px;
+}
+
+.person-name,
+.venue-type,
+.story-title,
+.wish-name,
+.account-name,
+.rsvp-name {
+  font-weight: 600 !important;
+  color: var(--theme-darker) !important;
+}
+
+.person-desc,
+.story-desc,
+.venue-location p,
+.wish-content,
+.ayat-latin {
+  font-weight: 500 !important;
+  color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
 }

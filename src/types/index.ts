@@ -48,6 +48,7 @@ export interface InvitationConfig {
   bg_animation_glow?: boolean
   bg_animation_butterflies?: boolean
   bg_animation_rings?: boolean
+  scroll_effect?: 'fade-up' | 'zoom-in' | 'bounce' | 'slide-left' | 'flip-up'
 }
 
 export interface Venue {
